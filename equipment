@@ -1,0 +1,71 @@
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+
+const spaces = [
+  "攝影棚 A",
+  "攝影棚 B",
+  "攝影棚 C",
+  "燈光室",
+  "道具倉庫",
+  "相機櫃",
+  "外出設備",
+];
+
+const dummyInventory = {
+  "攝影棚 A": ["Canon R5", "腳架", "燈架 x2"],
+  "攝影棚 B": ["Sony A7S3", "背景布", "電池 x3"],
+  // 其他空間預設空
+};
+
+export default function EquipmentInventory() {
+  const [selectedRoom, setSelectedRoom] = useState("攝影棚 A");
+  const [usageLog, setUsageLog] = useState("");
+  const [inventory, setInventory] = useState(dummyInventory);
+
+  const handleSubmit = () => {
+    alert(`紀錄已送出：\n地點：${selectedRoom}\n內容：${usageLog}`);
+    setUsageLog("");
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100 p-6">
+      <h1 className="text-3xl font-bold mb-6 text-center">📦 器材庫存管理</h1>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {spaces.map((room) => (
+          <Card
+            key={room}
+            className={`cursor-pointer hover:shadow-lg transition-all duration-300 ${selectedRoom === room ? "border-blue-500" : ""}`}
+            onClick={() => setSelectedRoom(room)}
+          >
+            <CardContent className="p-4">
+              <h2 className="text-xl font-semibold mb-2">{room}</h2>
+              <ul className="text-sm text-gray-700 list-disc list-inside">
+                {(inventory[room] || ["無紀錄"]).map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="mt-10 max-w-2xl mx-auto bg-white p-6 rounded-xl shadow">
+        <h2 className="text-xl font-bold mb-4">📋 使用紀錄表單</h2>
+        <p className="mb-2 text-gray-600">目前選擇地點：<strong>{selectedRoom}</strong></p>
+
+        <Textarea
+          placeholder="請輸入今天有哪些器材被使用（例如：Canon R5 拿去外拍，腳架損壞...）"
+          value={usageLog}
+          onChange={(e) => setUsageLog(e.target.value)}
+          className="mb-4"
+        />
+
+        <Button onClick={handleSubmit}>送出紀錄</Button>
+      </div>
+    </div>
+  );
+}
